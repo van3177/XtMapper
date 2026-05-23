@@ -7,7 +7,13 @@ on:
       - "v*"
 
 jobs:
+  build-docs:
+    uses: ./.github/workflows/build-docs.yml
+  
   build:
+    needs:
+      - build-docs
+      
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -34,11 +40,16 @@ jobs:
           echo '${{ secrets.KEYSTORE }}' | base64 -d > keystore.jks
         fi
 
-    # Tạo thư mục rỗng thay thế cho phần tài liệu bị lỗi để Gradle build mượt mà
-    - name: Create dummy assets directory
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Move artifact to assets
       run: |
-        mkdir -p ./app/src/main/assets/XtMapper-docs
-        touch ./app/src/main/assets/XtMapper-docs/.gitkeep
+          cd ./github-pages
+          tar xvf artifact.tar && rm artifact.tar
+          cd ../
+          mkdir ./app/src/main/assets
+          mv ./github-pages ./app/src/main/assets/XtMapper-docs
 
     - name: Build with Gradle
       run: ./gradlew app:assembleRelease
@@ -49,7 +60,7 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: 'app/build/outputs/apk/release/*.apk'
         asset_name: app-release.zip
-        tag: ${{ github.ref_name }}
+        tag: v2.4.3
         overwrite: true
         file_glob: true          
         draft: true
