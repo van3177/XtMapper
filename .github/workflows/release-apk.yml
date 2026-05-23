@@ -38,16 +38,7 @@ jobs:
           echo '${{ secrets.KEYSTORE }}' | base64 -d > keystore.jks
         fi
 
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-
-    - name: Move artifact to assets
-      run: |
-          cd ./github-pages
-          tar xvf artifact.tar && rm artifact.tar
-          cd ../
-          mkdir ./app/src/main/assets
-          mv ./github-pages ./app/src/main/assets/XtMapper-docs
+   
 
     - name: Build with Gradle
       run: ./gradlew app:assembleRelease
