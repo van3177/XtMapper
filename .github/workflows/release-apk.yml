@@ -7,12 +7,10 @@ on:
       - "v*"
 
 jobs:
-  build-docs:
-    uses: ./.github/workflows/build-docs.yml
+  
   
   build:
-    needs:
-      - build-docs
+    
       
     runs-on: ubuntu-latest
     steps:
