@@ -74,6 +74,8 @@
             <property
                 android:name="android.app.property.SPECIAL_USE_FGS_SUBTYPE"
                 android:value="keymapper_touch_pointer" />
+                
+        </service>
         <service
             android:name=".service.InputListenerService"
             android:exported="true"
