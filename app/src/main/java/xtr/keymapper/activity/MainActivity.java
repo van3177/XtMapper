@@ -184,8 +184,12 @@ public class MainActivity extends AppCompatActivity implements ProfilesViewAdapt
         if (selectedProfileName == null) {
             showAlertDialog(R.string.no_profile_selected, R.string.select_profile_from_below, null, R.string.ok);
         } else {
-            if (isServiceBound) pointerOverlay.launchProfile(selectedProfileName);
-            else startPointer();
+            // SỬA DÒNG NÀY: Tránh lỗi NullPointerException
+            if (pointerOverlay != null) {
+                pointerOverlay.launchProfile(selectedProfileName);
+            } else {
+                startPointer();
+            }
         }
     }
 
@@ -347,17 +351,18 @@ public class MainActivity extends AppCompatActivity implements ProfilesViewAdapt
     private final ServiceConnection connection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             isServiceBound = true;
-            // We've bound to Service, cast the IBinder and get TouchPointer instance
             TouchPointer.TouchPointerBinder binder = (TouchPointer.TouchPointerBinder) service;
             pointerOverlay = binder.getService();
             pointerOverlay.setActivityCallback(mCallback);
         }
+        
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             isServiceBound = false;
+            // THÊM DÒNG NÀY: Xóa tham chiếu khi service bị ngắt
+            pointerOverlay = null; 
         }
     };
 }
