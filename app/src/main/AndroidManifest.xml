@@ -69,7 +69,11 @@
         <service
             android:name=".TouchPointer"
             android:enabled="true"
-            android:foregroundServiceType="specialUse" /> <!-- Declares the input method service. -->
+            android:foregroundServiceType="specialUse" > 
+            
+            <property
+                android:name="android.app.property.SPECIAL_USE_FGS_SUBTYPE"
+                android:value="keymapper_touch_pointer" />
         <service
             android:name=".service.InputListenerService"
             android:exported="true"
